@@ -28,16 +28,16 @@ class AreaTest {
 
     @Test
     void includesPolygonEdgesAndHonorsWorldFiltering() {
-        Area interchange = new Area("interchange", "互通区", 10, Set.of("world"), List.of(
+        Area hutong = new Area("Hutong", "互通区", 10, Set.of("world"), List.of(
                 new AreaPoint(5348, 4892),
                 new AreaPoint(-2968, 4892),
                 new AreaPoint(-2968, -4368),
                 new AreaPoint(5349, -4359)
         ));
 
-        assertTrue(interchange.contains("world", 5348, 4892));
-        assertTrue(interchange.contains("world", 0, 0));
-        assertFalse(interchange.contains("world_nether", 0, 0));
+        assertTrue(hutong.contains("world", 5348, 4892));
+        assertTrue(hutong.contains("world", 0, 0));
+        assertFalse(hutong.contains("world_nether", 0, 0));
     }
 
     @Test

@@ -92,7 +92,11 @@ public class LicensePlateManager {
         String fallback = plugin.getRuntimeConfig().getString("registration.default-prefix", "芒 A-");
         return locationApi.findArea(horse.getLocation())
                 .map(area -> {
-                    String areaDefault = area.id().equals("outskirts") ? "芒 D-" : fallback;
+                    String areaDefault = switch (area.id()) {
+                        case "Hutong" -> "芒 C-";
+                        case "outskirts" -> "芒 D-";
+                        default -> fallback;
+                    };
                     return plugin.getRuntimeConfig().getString(
                             "registration.area-prefixes." + area.id(), areaDefault);
                 })

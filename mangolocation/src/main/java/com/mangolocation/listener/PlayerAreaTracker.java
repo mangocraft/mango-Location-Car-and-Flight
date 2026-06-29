@@ -33,7 +33,7 @@ public final class PlayerAreaTracker implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onJoin(PlayerJoinEvent event) {
-        update(event.getPlayer(), event.getPlayer().getLocation(), false);
+        update(event.getPlayer(), event.getPlayer().getLocation(), true);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -96,17 +96,26 @@ public final class PlayerAreaTracker implements Listener {
             return;
         }
 
+        if (previous != null && !previous.isWorldArea()) {
+            sendLines(player, api.getLeaveMessages(previous));
+        }
+        if (current != null && !current.isWorldArea()) {
+            sendLines(player, api.getEnterMessages(current));
+        }
+
         String message;
-        Area messageArea;
-        if (current != null) {
-            messageArea = current;
-            message = api.formatEnterMessage(messageArea);
-        } else if (previous != null) {
-            messageArea = previous;
-            message = api.formatLeaveMessage(messageArea);
+        if (current != null && !current.isWorldArea()) {
+            message = api.formatEnterMessage(current);
+        } else if (previous != null && !previous.isWorldArea()) {
+            message = api.formatLeaveMessage(previous);
         } else {
             return;
         }
         player.sendActionBar(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+    }
+
+    private void sendLines(Player player, java.util.List<String> lines) {
+        lines.forEach(line -> player.sendMessage(
+                LegacyComponentSerializer.legacyAmpersand().deserialize(line)));
     }
 }

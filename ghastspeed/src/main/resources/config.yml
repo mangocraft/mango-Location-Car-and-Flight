@@ -19,7 +19,7 @@ registration:
   area-prefixes:
     san_cheng: "B-S"
     huadu: "B-H"
-    interchange: "B-I"
+    Hutong: "B-I"
     outskirts: "B-O"
 
 # 速度等级设置 (基础移动速度为 0.2)

@@ -92,7 +92,11 @@ public class TailNumberManager {
         String fallback = plugin.getRuntimeConfig().getString("registration.default-prefix", "B-");
         return locationApi.findArea(entity.getLocation())
                 .map(area -> {
-                    String areaDefault = area.id().equals("outskirts") ? "B-O" : fallback;
+                    String areaDefault = switch (area.id()) {
+                        case "Hutong" -> "B-I";
+                        case "outskirts" -> "B-O";
+                        default -> fallback;
+                    };
                     return plugin.getRuntimeConfig().getString(
                             "registration.area-prefixes." + area.id(), areaDefault);
                 })

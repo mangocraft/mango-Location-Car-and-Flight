@@ -15,7 +15,7 @@ registration:
   area-prefixes:
     san_cheng: "芒 A-"
     huadu: "芒 B-"
-    interchange: "芒 C-"
+    Hutong: "芒 C-"
     outskirts: "芒 D-"
 
 # 速度等级设置 (基础移动速度为 0.2)

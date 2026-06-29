@@ -16,9 +16,38 @@ tracking:
   notify-player: true
   enter-message: "&a你已进入 &e{area}"
   leave-message: "&7你已离开 &e{area}"
+  area-messages:
+    san_cheng:
+      enter:
+        - "&6✦ 魅力三城，灯火如昼，欢迎来到三城区。"
+        - "&7三江风月入长街，一城烟火候君来。"
+      leave:
+        - "&7你已离开三城区。"
+        - "&8回首长街灯未眠，且携清风赴前川。"
+    huadu:
+      enter:
+        - "&d✿ 魅力花都，芳华满城，欢迎来到花都区。"
+        - "&7花影随风铺锦路，满城春色待君游。"
+      leave:
+        - "&7你已离开花都区。"
+        - "&8花香尚在衣襟上，前路清风亦有情。"
+    Hutong:
+      enter:
+        - "&b✦ 魅力互通，通衢八方，欢迎来到互通区。"
+        - "&7长路交汇连南北，一程风景共云天。"
+      leave:
+        - "&7你已离开互通区。"
+        - "&8此去千程皆坦荡，愿君一路有清风。"
+    outskirts:
+      enter:
+        - "&a❧ 魅力远郊，山野舒展，欢迎来到远郊。"
+        - "&7远山含黛接晴野，陌上清风伴客行。"
+      leave:
+        - "&7你已离开远郊。"
+        - "&8云影留痕辞旷野，灯火在前候归人。"
 
 areas:
-  interchange:
+  Hutong:
     name: "互通区"
     enabled: true
     priority: 10

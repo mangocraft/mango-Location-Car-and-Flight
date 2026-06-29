@@ -23,7 +23,7 @@ mvn clean package
 
 - `san_cheng`：三城区；
 - `huadu`：花都区；
-- `interchange`：互通区。
+- `Hutong`：互通区；英文 ID 的大小写是公共契约，不得改回 `interchange` 或小写。
 - `outskirts`：远郊，不是多边形；覆盖主世界中没有命中上述区域的所有坐标。
 
 多边形使用 X/Z 射线法，边界点算区域内；重叠边界由较小的 `priority` 获胜。不得把花都区简化成外接矩形，也不得拉直三城区的斜边。
@@ -48,6 +48,8 @@ Optional<Area> area = api.findArea(player);
 `findArea(String worldName, double x, double z)` 是纯坐标、线程安全查询。`findArea(Player)` 会读取实体位置，只能在该玩家事件、命令上下文或 `player.getScheduler()` 中调用。
 
 玩家区域变化通过 `PlayerAreaChangeEvent` 通知。区域监听只在玩家跨方块时计算；不得移除这一快速返回，或在每次 `PlayerMoveEvent` 中进行磁盘、网络、数据库操作。
+
+主世界行政区与远郊之间切换时，必须先发送旧区域的离开提示和送别诗，再发送新区域的欢迎提示和迎客诗；登录主世界时也发送当前区域欢迎诗。诗句在 `tracking.area-messages.<区域ID>` 配置，代码内保留同等默认值以兼容没有新增配置项的旧服务器。下界、末地等世界区域不播放行政区诗歌。
 
 ## Folia 强制规则
 
