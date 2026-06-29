@@ -11,7 +11,7 @@ public interface MangoLocationApi {
 
     /**
      * Thread-safe coordinate-only lookup. The configured main world returns an administrative
-     * polygon or empty; every other world returns a synthetic world area.
+     * polygon or its configured outskirts fallback; every other world returns a synthetic world area.
      */
     Optional<Area> findArea(String worldName, double x, double z);
 

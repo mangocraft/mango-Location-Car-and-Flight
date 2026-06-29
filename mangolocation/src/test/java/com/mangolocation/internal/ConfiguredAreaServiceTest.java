@@ -18,7 +18,9 @@ class ConfiguredAreaServiceTest {
         assertEquals("san_cheng", service.findArea("world", 0, 10_000).orElseThrow().id());
         assertEquals("huadu", service.findArea("world", 12_000, 10_000).orElseThrow().id());
         assertEquals("interchange", service.findArea("world", 0, 0).orElseThrow().id());
-        assertTrue(service.findArea("world", -20_000, -20_000).isEmpty());
+        Area outskirts = service.findArea("world", -20_000, -20_000).orElseThrow();
+        assertEquals("outskirts", outskirts.id());
+        assertEquals("远郊", outskirts.name());
     }
 
     @Test

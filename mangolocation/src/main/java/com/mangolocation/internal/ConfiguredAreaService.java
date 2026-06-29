@@ -19,7 +19,8 @@ import java.util.concurrent.ConcurrentMap;
 
 public final class ConfiguredAreaService implements MangoLocationApi {
 
-    private volatile Snapshot snapshot = new Snapshot("world", Map.of(), new ConcurrentHashMap<>(), List.of(), true,
+    private volatile Snapshot snapshot = new Snapshot("world", Map.of(), new ConcurrentHashMap<>(), List.of(),
+            Area.synthetic("outskirts", "远郊", "world"), true,
             "&a你已进入 &e{area}", "&7你已离开 &e{area}");
 
     public ConfiguredAreaService() {
@@ -27,6 +28,8 @@ public final class ConfiguredAreaService implements MangoLocationApi {
 
     public int reload(FileConfiguration config) {
         String mainWorld = config.getString("main-world", "world");
+        String outsideId = config.getString("main-world-outside-area.id", "outskirts");
+        String outsideName = config.getString("main-world-outside-area.name", "远郊");
         Map<String, String> worldNames = new LinkedHashMap<>();
         worldNames.put("world_nether", "地狱");
         worldNames.put("world_the_end", "末地");
@@ -72,6 +75,10 @@ public final class ConfiguredAreaService implements MangoLocationApi {
         }
 
         loaded.sort(Comparator.comparingInt(Area::priority));
+        if (ids.contains(outsideId)) {
+            throw new IllegalArgumentException("远郊兜底区域 ID 与多边形区域重复: " + outsideId);
+        }
+        Area mainWorldFallback = Area.synthetic(outsideId, outsideName, mainWorld);
         ConcurrentMap<String, Area> worldAreas = new ConcurrentHashMap<>();
         worldNames.forEach((worldName, displayName) ->
                 worldAreas.put(worldName, Area.forWorld(worldName, displayName)));
@@ -80,6 +87,7 @@ public final class ConfiguredAreaService implements MangoLocationApi {
                 Map.copyOf(worldNames),
                 worldAreas,
                 List.copyOf(loaded),
+                mainWorldFallback,
                 config.getBoolean("tracking.notify-player", true),
                 config.getString("tracking.enter-message", "&a你已进入 &e{area}"),
                 config.getString("tracking.leave-message", "&7你已离开 &e{area}")
@@ -94,7 +102,10 @@ public final class ConfiguredAreaService implements MangoLocationApi {
             return Optional.of(current.worldAreas().computeIfAbsent(worldName,
                     key -> Area.forWorld(key, current.worldNames().getOrDefault(key, key))));
         }
-        return current.areas().stream().filter(area -> area.contains(worldName, x, z)).findFirst();
+        return current.areas().stream()
+                .filter(area -> area.contains(worldName, x, z))
+                .findFirst()
+                .or(() -> Optional.of(current.mainWorldFallback()));
     }
 
     @Override
@@ -120,6 +131,7 @@ public final class ConfiguredAreaService implements MangoLocationApi {
 
     private record Snapshot(String mainWorld, Map<String, String> worldNames,
                             ConcurrentMap<String, Area> worldAreas, List<Area> areas,
+                            Area mainWorldFallback,
                             boolean notifyPlayer, String enterMessage, String leaveMessage) {
     }
 }

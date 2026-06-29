@@ -18,10 +18,19 @@ public record Area(String id, String name, int priority, Set<String> worlds, Lis
 
     /** Creates a synthetic area representing a non-main world/dimension. */
     public static Area forWorld(String worldName, String displayName) {
-        return new Area("world:" + worldName, displayName, Integer.MAX_VALUE, Set.of(worldName), List.of());
+        return synthetic("world:" + worldName, displayName, worldName);
     }
 
     public boolean isWorldArea() {
+        return isSyntheticArea() && id.startsWith("world:");
+    }
+
+    /** Creates a non-polygon fallback area for all coordinates in one world. */
+    public static Area synthetic(String id, String displayName, String worldName) {
+        return new Area(id, displayName, Integer.MAX_VALUE, Set.of(worldName), List.of());
+    }
+
+    public boolean isSyntheticArea() {
         return shape.isEmpty();
     }
 
@@ -35,7 +44,7 @@ public record Area(String id, String name, int priority, Set<String> worlds, Lis
         if (!supportsWorld(worldName)) {
             return false;
         }
-        if (isWorldArea()) {
+        if (isSyntheticArea()) {
             return true;
         }
 

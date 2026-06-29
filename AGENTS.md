@@ -24,6 +24,7 @@ mvn clean package
 - `san_cheng`：三城区；
 - `huadu`：花都区；
 - `interchange`：互通区。
+- `outskirts`：远郊，不是多边形；覆盖主世界中没有命中上述区域的所有坐标。
 
 多边形使用 X/Z 射线法，边界点算区域内；重叠边界由较小的 `priority` 获胜。不得把花都区简化成外接矩形，也不得拉直三城区的斜边。
 
@@ -33,7 +34,7 @@ mvn clean package
 - 名称：优先使用 `world-display-names`，否则使用 Bukkit 世界名；
 - 默认 `world_nether → 地狱`、`world_the_end → 末地`。
 
-主世界行政区外返回 `Optional.empty()`，非主世界始终返回合成 `Area`。
+主世界行政区外返回配置项 `main-world-outside-area` 定义的远郊区域，默认 `outskirts / 远郊`；非主世界始终返回合成 `Area`。对已加载的有效世界，API 因此始终能返回明确区域。
 
 ## 公共 API
 
@@ -88,7 +89,7 @@ Optional<Area> area = api.findArea(player);
 - 是否在错误线程访问了玩家、实体、区块或背包？
 - 是否向插件单例添加了普通可变集合？
 - 是否在 region tick 中写盘、联网或等待锁？
-- 是否保持主世界行政区和非主世界世界区域的返回契约？
+- 是否保持主世界行政区/远郊和非主世界世界区域的返回契约？
 - 是否保持末地飞机限制的所有入口？
 - 是否更新配置注释、README、本文件和测试？
 - 是否确认三个最终 JAR 不包含重复的 `com/mangolocation/api` 类？

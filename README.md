@@ -16,15 +16,15 @@ mvn clean package
 
 将以下文件放入服务器 `plugins/`，并确保 MangoLocation 一同安装：
 
-- `mangolocation/target/mangolocation-1.1.0.jar`
-- `horsespeed/target/horsespeed-1.2.jar`
-- `ghastspeed/target/ghastspeed-1.2.jar`
+- `mangolocation/target/mangolocation-1.2.0.jar`
+- `horsespeed/target/horsespeed-1.3.jar`
+- `ghastspeed/target/ghastspeed-1.3.jar`
 
-区域在 MangoLocation 的 `config.yml` 中配置。只有 `main-world` 执行行政区多边形检测；其他世界返回 `world-display-names` 中的显示名，例如“地狱”和“末地”。重载命令为 `/mangolocation reload`，玩家可直接用 `/area` 查询当前位置。
+区域在 MangoLocation 的 `config.yml` 中配置。只有 `main-world` 执行行政区多边形检测；未被任何多边形覆盖的主世界位置统一返回“远郊”。其他世界返回 `world-display-names` 中的显示名，例如“地狱”和“末地”。重载命令为 `/mangolocation reload`，玩家可直接用 `/area` 查询当前位置。
 
 ## 供其他插件调用
 
-把 `com.mangolocation:mangolocation:1.1.0` 作为 `provided` 依赖，并在 `plugin.yml` 添加：
+把 `com.mangolocation:mangolocation:1.2.0` 作为 `provided` 依赖，并在 `plugin.yml` 添加：
 
 ```yaml
 depend: [MangoLocation]
@@ -42,14 +42,14 @@ if (api == null) {
 
 String areaId = api.findArea(player)
         .map(Area::id)
-        .orElse("outside");
+        .orElse("unknown");
 
 String areaName = api.findArea(player)
         .map(Area::name)
-        .orElse("未划定区域");
+        .orElse("未知世界");
 ```
 
-如果手里只有坐标，也可以调用 `api.findArea(worldName, x, z)`。主世界行政区外返回空值；其他世界总会返回世界区域，ID 格式为 `world:<世界名>`。
+如果手里只有坐标，也可以调用 `api.findArea(worldName, x, z)`。主世界行政区外返回 `outskirts / 远郊`；其他世界返回世界区域，ID 格式为 `world:<世界名>`。
 
 监听跨区提醒或执行其他逻辑：
 

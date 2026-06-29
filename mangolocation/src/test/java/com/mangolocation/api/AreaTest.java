@@ -50,6 +50,15 @@ class AreaTest {
     }
 
     @Test
+    void distinguishesWorldAreasFromOtherSyntheticAreas() {
+        Area outskirts = Area.synthetic("outskirts", "远郊", "world");
+
+        assertTrue(outskirts.isSyntheticArea());
+        assertFalse(outskirts.isWorldArea());
+        assertTrue(outskirts.contains("world", -1_000_000, 1_000_000));
+    }
+
+    @Test
     void keepsTheOriginalSlopedSanChengBoundary() {
         Area sanCheng = area("san_cheng", List.of(
                 new AreaPoint(10032, 14080),

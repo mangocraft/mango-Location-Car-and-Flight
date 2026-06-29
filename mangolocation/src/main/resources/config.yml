@@ -1,6 +1,11 @@
 # 只有主世界执行下方行政区多边形检测。
 main-world: "world"
 
+# 主世界中未被下方多边形覆盖的地方统一归入远郊。
+main-world-outside-area:
+  id: "outskirts"
+  name: "远郊"
+
 # 其他世界直接作为一个区域返回；未列出的自定义世界使用其真实世界名。
 world-display-names:
   world_nether: "地狱"
