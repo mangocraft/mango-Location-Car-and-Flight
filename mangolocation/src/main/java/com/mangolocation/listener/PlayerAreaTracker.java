@@ -16,7 +16,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -24,7 +23,7 @@ public final class PlayerAreaTracker implements Listener {
 
     private final MangoLocation plugin;
     private final ConfiguredAreaService api;
-    private final Map<UUID, Area> currentAreas = new ConcurrentHashMap<>();
+    private final Map<UUID, TrackedArea> currentAreas = new ConcurrentHashMap<>();
 
     public PlayerAreaTracker(MangoLocation plugin, ConfiguredAreaService api) {
         this.plugin = plugin;
@@ -64,11 +63,14 @@ public final class PlayerAreaTracker implements Listener {
     }
 
     private void update(Player player, Location location, boolean fireEvent) {
-        Area previous = currentAreas.get(player.getUniqueId());
-        Area current = api.findArea(location).orElse(null);
+        TrackedArea previous = currentAreas.get(player.getUniqueId());
+        String currentWorld = location.getWorld() == null ? null : location.getWorld().getName();
+        Area currentArea = api.findArea(location).orElse(null);
+        TrackedArea current = currentArea == null || currentWorld == null
+                ? null : new TrackedArea(currentArea, currentWorld);
         if (sameArea(previous, current)) {
             // A reload can replace an Area while keeping its ID. Retain the new immutable value.
-            if (current != null && current != previous) {
+            if (current != null && current.area() != previous.area()) {
                 currentAreas.put(player.getUniqueId(), current);
             }
             return;
@@ -83,31 +85,36 @@ public final class PlayerAreaTracker implements Listener {
         if (!fireEvent) {
             return;
         }
-        plugin.getServer().getPluginManager().callEvent(new PlayerAreaChangeEvent(player, previous, current));
+        plugin.getServer().getPluginManager().callEvent(new PlayerAreaChangeEvent(
+                player,
+                previous == null ? null : previous.area(), previous == null ? null : previous.worldName(),
+                current == null ? null : current.area(), current == null ? null : current.worldName()));
         notifyPlayer(player, previous, current);
     }
 
-    private boolean sameArea(Area first, Area second) {
-        return first == second || (first != null && second != null && Objects.equals(first.id(), second.id()));
+    private boolean sameArea(TrackedArea first, TrackedArea second) {
+        return first == second || (first != null && second != null
+                && first.area().id().equals(second.area().id())
+                && first.worldName().equals(second.worldName()));
     }
 
-    private void notifyPlayer(Player player, Area previous, Area current) {
+    private void notifyPlayer(Player player, TrackedArea previous, TrackedArea current) {
         if (!api.shouldNotifyPlayer()) {
             return;
         }
 
-        if (previous != null && !previous.isWorldArea()) {
-            sendLines(player, api.getLeaveMessages(previous));
+        if (previous != null && api.isMainWorld(previous.worldName())) {
+            sendLines(player, api.getLeaveMessages(previous.area()));
         }
-        if (current != null && !current.isWorldArea()) {
-            sendLines(player, api.getEnterMessages(current));
+        if (current != null && api.isMainWorld(current.worldName())) {
+            sendLines(player, api.getEnterMessages(current.area()));
         }
 
         String message;
-        if (current != null && !current.isWorldArea()) {
-            message = api.formatEnterMessage(current);
-        } else if (previous != null && !previous.isWorldArea()) {
-            message = api.formatLeaveMessage(previous);
+        if (current != null && api.isMainWorld(current.worldName())) {
+            message = api.formatEnterMessage(current.area());
+        } else if (previous != null && api.isMainWorld(previous.worldName())) {
+            message = api.formatLeaveMessage(previous.area());
         } else {
             return;
         }
@@ -117,5 +124,8 @@ public final class PlayerAreaTracker implements Listener {
     private void sendLines(Player player, java.util.List<String> lines) {
         lines.forEach(line -> player.sendMessage(
                 LegacyComponentSerializer.legacyAmpersand().deserialize(line)));
+    }
+
+    private record TrackedArea(Area area, String worldName) {
     }
 }

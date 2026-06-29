@@ -10,8 +10,9 @@ import java.util.Optional;
 public interface MangoLocationApi {
 
     /**
-     * Thread-safe coordinate-only lookup. The configured main world returns an administrative
-     * polygon or its configured outskirts fallback; every other world returns a synthetic world area.
+     * Thread-safe coordinate-only lookup. The main world returns an administrative polygon or
+     * outskirts; the configured Nether world uses projected 1:8 polygons; other worlds return a
+     * synthetic world area.
      */
     Optional<Area> findArea(String worldName, double x, double z);
 

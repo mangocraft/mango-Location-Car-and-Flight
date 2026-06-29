@@ -1,12 +1,18 @@
 # 只有主世界执行下方行政区多边形检测。
 main-world: "world"
 
+# 地狱使用 Minecraft 默认 1:8 坐标比例映射主世界区域。
+# 例如地狱 (100, 200) 会按主世界 (800, 1600) 判断区域。
+nether-mapping:
+  world: "world_nether"
+  coordinate-scale: 8.0
+
 # 主世界中未被下方多边形覆盖的地方统一归入远郊。
 main-world-outside-area:
   id: "outskirts"
   name: "远郊"
 
-# 其他世界直接作为一个区域返回；未列出的自定义世界使用其真实世界名。
+# 除上述主世界和映射地狱外，其他世界直接作为一个区域返回；未列出的世界使用真实名称。
 world-display-names:
   world_nether: "地狱"
   world_the_end: "末地"

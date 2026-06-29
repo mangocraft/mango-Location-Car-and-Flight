@@ -8,6 +8,7 @@ import java.io.File;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ConfiguredAreaServiceTest {
@@ -25,17 +26,32 @@ class ConfiguredAreaServiceTest {
     }
 
     @Test
-    void returnsFriendlyWorldAreasOutsideMainWorld() {
+    void projectsAdministrativeAreasIntoTheNetherAtOneToEightScale() {
         ConfiguredAreaService service = loadDefaultService();
 
-        Area nether = service.findArea("world_nether", 0, 10_000).orElseThrow();
+        Area sanCheng = service.findArea("world_nether", 0, 1_250).orElseThrow();
+        Area huadu = service.findArea("world_nether", 1_500, 1_250).orElseThrow();
+        Area hutong = service.findArea("world_nether", 0, 0).orElseThrow();
+        Area outskirts = service.findArea("world_nether", -2_500, -2_500).orElseThrow();
+
+        assertEquals("san_cheng", sanCheng.id());
+        assertEquals("huadu", huadu.id());
+        assertEquals("Hutong", hutong.id());
+        assertEquals("outskirts", outskirts.id());
+        assertTrue(sanCheng.supportsWorld("world_nether"));
+        assertFalse(sanCheng.isWorldArea());
+    }
+
+    @Test
+    void returnsFriendlyWorldAreasOutsideMappedWorlds() {
+        ConfiguredAreaService service = loadDefaultService();
+
         Area end = service.findArea("world_the_end", 12_000, 10_000).orElseThrow();
         Area custom = service.findArea("resource_world", 0, 0).orElseThrow();
 
-        assertEquals("地狱", nether.name());
         assertEquals("末地", end.name());
         assertEquals("resource_world", custom.name());
-        assertTrue(nether.isWorldArea());
+        assertTrue(end.isWorldArea());
     }
 
     @Test
@@ -43,6 +59,8 @@ class ConfiguredAreaServiceTest {
         ConfiguredAreaService service = loadDefaultService();
 
         assertEquals("Hutong", service.findArea("world", 5348, 4892).orElseThrow().id());
+        assertEquals("Hutong", service.findArea("world_nether", 5348.0 / 8.0, 4892.0 / 8.0)
+                .orElseThrow().id());
     }
 
     @Test

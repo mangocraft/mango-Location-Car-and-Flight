@@ -20,8 +20,9 @@ import java.util.function.Function;
 
 public final class ConfiguredAreaService implements MangoLocationApi {
 
-    private volatile Snapshot snapshot = new Snapshot("world", Map.of(), new ConcurrentHashMap<>(), List.of(),
-            Area.synthetic("outskirts", "远郊", "world"), Map.of(), true,
+    private volatile Snapshot snapshot = new Snapshot("world", "world_nether", 8.0,
+            Map.of(), new ConcurrentHashMap<>(), List.of(), Area.synthetic("outskirts", "远郊", "world"),
+            List.of(), Area.synthetic("outskirts", "远郊", "world_nether"), Map.of(), true,
             "&a你已进入 &e{area}", "&7你已离开 &e{area}");
 
     public ConfiguredAreaService() {
@@ -29,6 +30,14 @@ public final class ConfiguredAreaService implements MangoLocationApi {
 
     public int reload(FileConfiguration config) {
         String mainWorld = config.getString("main-world", "world");
+        String netherWorld = config.getString("nether-mapping.world", "world_nether");
+        double netherScale = config.getDouble("nether-mapping.coordinate-scale", 8.0);
+        if (mainWorld.equals(netherWorld)) {
+            throw new IllegalArgumentException("主世界和地狱世界名称不能相同");
+        }
+        if (!Double.isFinite(netherScale) || netherScale <= 0.0) {
+            throw new IllegalArgumentException("nether-mapping.coordinate-scale 必须为正数");
+        }
         String outsideId = config.getString("main-world-outside-area.id", "outskirts");
         String outsideName = config.getString("main-world-outside-area.name", "远郊");
         Map<String, String> worldNames = new LinkedHashMap<>();
@@ -81,6 +90,10 @@ public final class ConfiguredAreaService implements MangoLocationApi {
             throw new IllegalArgumentException("远郊兜底区域 ID 与多边形区域重复: " + outsideId);
         }
         Area mainWorldFallback = Area.synthetic(outsideId, outsideName, mainWorld);
+        List<Area> netherAreas = loaded.stream()
+                .map(area -> projectToNether(area, netherWorld, netherScale))
+                .toList();
+        Area netherFallback = Area.synthetic(outsideId, outsideName, netherWorld);
         Map<String, AreaMessages> messages = new LinkedHashMap<>();
         loaded.forEach(area -> messages.put(area.id(), loadAreaMessages(config, area)));
         messages.put(mainWorldFallback.id(), loadAreaMessages(config, mainWorldFallback));
@@ -89,10 +102,14 @@ public final class ConfiguredAreaService implements MangoLocationApi {
                 worldAreas.put(worldName, Area.forWorld(worldName, displayName)));
         snapshot = new Snapshot(
                 mainWorld,
+                netherWorld,
+                netherScale,
                 Map.copyOf(worldNames),
                 worldAreas,
                 List.copyOf(loaded),
                 mainWorldFallback,
+                netherAreas,
+                netherFallback,
                 Map.copyOf(messages),
                 config.getBoolean("tracking.notify-player", true),
                 config.getString("tracking.enter-message", "&a你已进入 &e{area}"),
@@ -105,6 +122,12 @@ public final class ConfiguredAreaService implements MangoLocationApi {
     public Optional<Area> findArea(String worldName, double x, double z) {
         Snapshot current = snapshot;
         if (!current.mainWorld().equals(worldName)) {
+            if (current.netherWorld().equals(worldName)) {
+                return current.netherAreas().stream()
+                        .filter(area -> area.contains(worldName, x, z))
+                        .findFirst()
+                        .or(() -> Optional.of(current.netherFallback()));
+            }
             return Optional.of(current.worldAreas().computeIfAbsent(worldName,
                     key -> Area.forWorld(key, current.worldNames().getOrDefault(key, key))));
         }
@@ -117,6 +140,10 @@ public final class ConfiguredAreaService implements MangoLocationApi {
     @Override
     public List<Area> getAreas() {
         return snapshot.areas();
+    }
+
+    public boolean isMainWorld(String worldName) {
+        return snapshot.mainWorld().equals(worldName);
     }
 
     public boolean shouldNotifyPlayer() {
@@ -177,9 +204,18 @@ public final class ConfiguredAreaService implements MangoLocationApi {
         return template.replace("{area}", area.name()).replace("{id}", area.id());
     }
 
-    private record Snapshot(String mainWorld, Map<String, String> worldNames,
+    private Area projectToNether(Area area, String netherWorld, double scale) {
+        List<AreaPoint> projectedShape = area.shape().stream()
+                .map(point -> new AreaPoint(point.x() / scale, point.z() / scale))
+                .toList();
+        return new Area(area.id(), area.name(), area.priority(), Set.of(netherWorld), projectedShape);
+    }
+
+    private record Snapshot(String mainWorld, String netherWorld, double netherScale,
+                            Map<String, String> worldNames,
                             ConcurrentMap<String, Area> worldAreas, List<Area> areas,
-                            Area mainWorldFallback, Map<String, AreaMessages> areaMessages,
+                            Area mainWorldFallback, List<Area> netherAreas, Area netherFallback,
+                            Map<String, AreaMessages> areaMessages,
                             boolean notifyPlayer, String enterMessage, String leaveMessage) {
     }
 
