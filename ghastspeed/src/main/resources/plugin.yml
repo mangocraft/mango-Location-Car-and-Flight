@@ -1,0 +1,42 @@
+name: GhostSpeed
+version: '${project.version}'
+main: com.ghastspeed.GhostSpeed
+api-version: '1.21'
+author: GhostSpeed Team
+description: 完全支持Folia的线程安全插件 - 为你的善魂提供速度护具
+folia-supported: true
+depend: [MangoLocation]
+softdepend: [Vault, Residence]
+
+commands:
+  ghastspeed:
+    description: GhostSpeed 主命令
+    aliases: [gs]
+    permission: ghastspeed.admin
+    permission-message: 你没有权限使用此命令！
+  ghastpay:
+    description: 续费恶魂飞行时间
+    permission: ghastspeed.use
+    permission-message: 你没有权限使用此命令！
+  ghastspeedreload:
+    description: 重载GhostSpeed配置文件
+    aliases: [gsreload]
+    permission: ghastspeed.reload
+    permission-message: 你没有权限使用此命令！
+
+permissions:
+  ghastspeed.admin:
+    description: 管理员权限
+    default: op
+  ghastspeed.reload:
+    description: 重载配置文件权限
+    default: op
+  ghastspeed.use:
+    description: 使用续费指令
+    default: true
+  ghastspeed.vipflight.5:
+    description: 5级恶魂免费飞行
+    default: false
+  ghastspeed.vipflight.6:
+    description: 6级恶魂免费飞行
+    default: false

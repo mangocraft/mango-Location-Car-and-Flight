@@ -1,0 +1,46 @@
+# 只有主世界执行下方行政区多边形检测。
+main-world: "world"
+
+# 其他世界直接作为一个区域返回；未列出的自定义世界使用其真实世界名。
+world-display-names:
+  world_nether: "地狱"
+  world_the_end: "末地"
+
+# priority 数字越小，边界重叠时越优先。
+tracking:
+  notify-player: true
+  enter-message: "&a你已进入 &e{area}"
+  leave-message: "&7你已离开 &e{area}"
+
+areas:
+  interchange:
+    name: "互通区"
+    enabled: true
+    priority: 10
+    shape:
+      - { x: 5348, z: 4892 }
+      - { x: -2968, z: 4892 }
+      - { x: -2968, z: -4368 }
+      - { x: 5349, z: -4359 }
+
+  san_cheng:
+    name: "三城区"
+    enabled: true
+    priority: 20
+    shape:
+      - { x: 10032, z: 14080 }
+      - { x: -3120, z: 13888 }
+      - { x: -2968, z: 4892 }
+      - { x: 10032, z: 4892 }
+
+  huadu:
+    name: "花都区"
+    enabled: true
+    priority: 30
+    shape:
+      - { x: 5348, z: 4892 }
+      - { x: 5348, z: -4359 }
+      - { x: 17348, z: -4359 }
+      - { x: 17348, z: 14080 }
+      - { x: 10032, z: 14080 }
+      - { x: 10032, z: 4892 }

@@ -1,0 +1,60 @@
+# BmwSpeed 配置文件
+# Debug 模式开关
+debug: false
+
+# 撞击爆炸是否破坏方块（true 会破坏周围建筑，false 不破坏）
+collision-explosion-damages-blocks: false
+
+# 活跃车辆碰撞检测周期。4 tick = 每秒 5 次，可降低百人服调度压力。
+collision-check-interval-ticks: 4
+
+# 新车首次登记时，根据 MangoLocation 的区域 ID 选择车牌前缀。
+# 已经上过牌的车辆不会因重载或跨区而换牌。
+registration:
+  default-prefix: "芒 A-"
+  area-prefixes:
+    san_cheng: "芒 A-"
+    huadu: "芒 B-"
+    interchange: "芒 C-"
+
+# 速度等级设置 (基础移动速度为 0.2)
+speed-levels:
+  1: 0.04  # 速度 I: 宝马 1 系
+  2: 0.06  # 速度 II: 宝马 3 系
+  3: 0.08  # 速度 III: 宝马 5 系
+  4: 0.12  # 速度 IV: 宝马 7 系
+  5: 0.18  # 速度 V: 宝马 M5
+  6: 0.26  # 速度 VI: 宝马 M8
+
+# 5 级宝马 (宝马 M5)
+level5-car:
+  price: 500.0
+  permission: "bmwspeed.vipdrive.5"
+  fuel-duration: 15 # 分钟
+  buffer-duration: 5  # 分钟
+
+# 6 级宝马 (宝马 M8)
+level6-car:
+  price: 1000.0
+  permission: "bmwspeed.vipdrive.6"
+  fuel-duration: 30 # 分钟
+  buffer-duration: 5  # 分钟
+
+# 物品名称配置
+item-names:
+  speed-engine: "&b%s 跑车引擎 %d"
+  lore:
+    - "&7为你的马匹装备此引擎"
+    - "&7可获得速度 %d 效果"
+    - ""
+    - "&e速度等级：&6%d"
+    - "&e把马匹变成宝马跑车！"
+
+# 配方材料配置
+recipe-materials:
+  1: GOLD_BLOCK
+  2: IRON_BLOCK
+  3: EMERALD_BLOCK
+  4: DIAMOND_BLOCK
+  5: NETHERITE_BLOCK
+  6: NETHERITE_BLOCK

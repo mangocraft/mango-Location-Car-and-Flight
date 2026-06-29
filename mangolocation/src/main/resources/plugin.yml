@@ -1,0 +1,18 @@
+name: MangoLocation
+version: '${project.version}'
+main: com.mangolocation.MangoLocation
+api-version: '1.21'
+author: MangoLocation Team
+description: 为其他插件提供 Folia 安全的地理区域 API
+folia-supported: true
+
+commands:
+  mangolocation:
+    description: 查询当前位置或重载区域
+    aliases: [area, mlocation, mloc]
+    usage: /<command> [where|reload]
+
+permissions:
+  mangolocation.reload:
+    description: 允许重载 MangoLocation
+    default: op

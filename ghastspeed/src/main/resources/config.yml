@@ -1,0 +1,70 @@
+# GhostSpeed 配置文件
+# Debug模式开关
+debug: false
+
+# 撞击爆炸是否破坏方块（true 会破坏周围建筑，false 不破坏）
+collision-explosion-damages-blocks: false
+
+# 活跃飞机碰撞检测周期。4 tick = 每秒 5 次，可降低百人服调度压力。
+collision-check-interval-ticks: 4
+
+end-flight-restriction:
+  enabled: true
+  message: "&c末地空间裂隙与龙息会持续扰乱飞行器导航核心，航空管理局禁止在此组装或启动飞机！"
+
+# 飞机首次登记时，根据 MangoLocation 的区域 ID 选择机号前缀。
+# 已经登记过的飞机不会因重载或跨区而更换机号。
+registration:
+  default-prefix: "B-"
+  area-prefixes:
+    san_cheng: "B-S"
+    huadu: "B-H"
+    interchange: "B-I"
+
+# 速度等级设置 (基础移动速度为 0.2)
+speed-levels:
+  1: 0.04  # 速度 I: 基础步速
+  2: 0.06  # 速度 II
+  3: 0.08  # 速度 III
+  4: 0.12  # 速度 IV
+  5: 0.18  # 速度 V: 小飞机
+  6: 0.26  # 速度 VI (OP专属): 大飞机
+
+# 5级恶魂 (小飞机)
+level5-ghast:
+  price: 5000.0
+  permission: "ghastspeed.vipflight.5"
+  flight-duration: 15 # 分钟
+  buffer-duration: 5  # 分钟
+  # 小飞机专属停机坪（领地名，支持子领地如 city.helipad）
+  allowed-regions:
+    - "small_airport_1"
+    - "spawn_rooftop"
+
+# 6级恶魂 (大飞机)
+level6-ghast:
+  price: 10000.0
+  permission: "ghastspeed.vipflight.6"
+  flight-duration: 15 # 分钟
+  buffer-duration: 5  # 分钟
+  # 大飞机专属停机坪
+  allowed-regions:
+    - "vip_airport"
+    - "capital_hub"
+
+# 物品名称配置
+item-names:
+  speed-harness: "&b%s 速度护具 %d"
+  lore:
+    - "&7为你的善魂装备此护具"
+    - "&7可获得速度 %d 效果"
+    - ""
+    - "&e速度等级: &6%d"
+
+# 配方材料配置
+recipe-materials:
+  1: GOLD_BLOCK
+  2: IRON_BLOCK
+  3: EMERALD_BLOCK
+  4: DIAMOND_BLOCK
+  5: NETHERITE_BLOCK

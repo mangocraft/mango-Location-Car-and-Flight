@@ -1,0 +1,17 @@
+# Maven outputs
+**/target/
+dependency-reduced-pom.xml
+
+# Local third-party server jars
+Residence-*.jar
+
+# IDE and operating system files
+.DS_Store
+**/.DS_Store
+.idea/
+.vscode/
+*.iml
+
+# Runtime plugin data
+plates.yml
+jijia.yml
