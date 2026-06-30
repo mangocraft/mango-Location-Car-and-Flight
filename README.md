@@ -16,17 +16,17 @@ mvn clean package
 
 将以下文件放入服务器 `plugins/`，并确保 MangoLocation 一同安装：
 
-- `mangolocation/target/mangolocation-1.4.0.jar`
+- `mangolocation/target/mangolocation-1.4.1.jar`
 - `horsespeed/target/horsespeed-1.5.jar`
 - `ghastspeed/target/ghastspeed-1.5.jar`
 
 区域在 MangoLocation 的 `config.yml` 中配置。主世界执行行政区多边形检测，未覆盖位置返回“远郊”；地狱按照 Minecraft 1:8 坐标比例投影同一套区域，例如地狱 `(100,200)` 按主世界 `(800,1600)` 判断。末地和其他世界返回 `world-display-names` 中的显示名。重载命令为 `/mangolocation reload`，玩家可直接用 `/area` 查询当前位置。
 
-互通区的公共英文 ID 为 `Hutong`。玩家登录主世界或在三城区、花都区、互通区、远郊之间移动时，会收到可配置的欢迎/送别提示和诗句；下界、末地不播放行政区诗歌。
+互通区的公共英文 ID 为 `Hutong`。区域提示默认关闭；将 `tracking.notify-player` 设为 `true` 后，玩家登录主世界或在三城区、花都区、互通区、远郊之间移动时，会收到可配置的欢迎/送别提示和诗句。下界、末地不播放行政区诗歌。修改后执行 `/mangolocation reload` 或 `/area reload` 即可生效，重载权限为 `mangolocation.reload`。
 
 ## 供其他插件调用
 
-把 `com.mangolocation:mangolocation:1.4.0` 作为 `provided` 依赖，并在 `plugin.yml` 添加：
+把 `com.mangolocation:mangolocation:1.4.1` 作为 `provided` 依赖，并在 `plugin.yml` 添加：
 
 ```yaml
 depend: [MangoLocation]

@@ -88,6 +88,23 @@ class ConfiguredAreaServiceTest {
         assertEquals("Hutong", service.findArea("world", 0, 0).orElseThrow().id());
     }
 
+    @Test
+    void notificationsAreDisabledByDefaultAndCanBeReloaded() {
+        YamlConfiguration config = loadDefaultConfig();
+        ConfiguredAreaService service = new ConfiguredAreaService();
+
+        service.reload(config);
+        assertFalse(service.shouldNotifyPlayer());
+
+        config.set("tracking.notify-player", null);
+        service.reload(config);
+        assertFalse(service.shouldNotifyPlayer());
+
+        config.set("tracking.notify-player", true);
+        service.reload(config);
+        assertTrue(service.shouldNotifyPlayer());
+    }
+
     private ConfiguredAreaService loadDefaultService() {
         ConfiguredAreaService service = new ConfiguredAreaService();
         YamlConfiguration config = loadDefaultConfig();

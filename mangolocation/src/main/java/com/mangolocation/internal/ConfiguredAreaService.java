@@ -22,7 +22,7 @@ public final class ConfiguredAreaService implements MangoLocationApi {
 
     private volatile Snapshot snapshot = new Snapshot("world", "world_nether", 8.0,
             Map.of(), new ConcurrentHashMap<>(), List.of(), Area.synthetic("outskirts", "远郊", "world"),
-            List.of(), Area.synthetic("outskirts", "远郊", "world_nether"), Map.of(), true,
+            List.of(), Area.synthetic("outskirts", "远郊", "world_nether"), Map.of(), false,
             "&a你已进入 &e{area}", "&7你已离开 &e{area}");
 
     public ConfiguredAreaService() {
@@ -111,7 +111,7 @@ public final class ConfiguredAreaService implements MangoLocationApi {
                 netherAreas,
                 netherFallback,
                 Map.copyOf(messages),
-                config.getBoolean("tracking.notify-player", true),
+                config.getBoolean("tracking.notify-player", false),
                 config.getString("tracking.enter-message", "&a你已进入 &e{area}"),
                 config.getString("tracking.leave-message", "&7你已离开 &e{area}")
         );

@@ -19,7 +19,8 @@ world-display-names:
 
 # priority 数字越小，边界重叠时越优先。
 tracking:
-  notify-player: true
+  # 默认关闭；设为 true 后才发送区域进入/离开提示及诗句。
+  notify-player: false
   enter-message: "&a你已进入 &e{area}"
   leave-message: "&7你已离开 &e{area}"
   area-messages:

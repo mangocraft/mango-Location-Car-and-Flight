@@ -51,7 +51,7 @@ Optional<Area> area = api.findArea(player);
 
 玩家区域变化通过 `PlayerAreaChangeEvent` 通知。区域监听只在玩家跨方块时计算；不得移除这一快速返回，或在每次 `PlayerMoveEvent` 中进行磁盘、网络、数据库操作。
 
-主世界行政区与远郊之间切换时，必须先发送旧区域的离开提示和送别诗，再发送新区域的欢迎提示和迎客诗；登录主世界时也发送当前区域欢迎诗。诗句在 `tracking.area-messages.<区域ID>` 配置，代码内保留同等默认值以兼容没有新增配置项的旧服务器。地狱虽返回映射行政区，但不得播放诗歌；提示与否必须依据玩家所在世界是否等于 `main-world`，不能只看 Area ID。
+区域提示由 `tracking.notify-player` 控制且必须默认关闭。仅在明确设为 `true` 时，主世界行政区与远郊之间切换才先发送旧区域的离开提示和送别诗，再发送新区域的欢迎提示和迎客诗；登录主世界时也发送当前区域欢迎诗。诗句在 `tracking.area-messages.<区域ID>` 配置，代码内保留同等默认值以兼容没有新增配置项的旧服务器。地狱虽返回映射行政区，但不得播放诗歌；提示与否必须依据玩家所在世界是否等于 `main-world`，不能只看 Area ID。配置重载必须同时支持 `/mangolocation reload` 与 `/area reload`，并使用异步文件读取和不可变快照发布。
 
 ## Folia 强制规则
 
